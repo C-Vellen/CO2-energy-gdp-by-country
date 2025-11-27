@@ -2,11 +2,28 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+from matplotlib.colors import ListedColormap
 import seaborn as sns
 from scipy.stats import pearsonr
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans, DBSCAN
 from sklearn.metrics import silhouette_score, silhouette_samples
+from mpl_toolkits.mplot3d import Axes3D
+
+# Définir les couleurs (bleu, rouge, vert, noir, violet, cyan, etc.)
+couleurs_vives = [
+    "#0000FF",  # bleu
+    "#800080",  # violet
+    "#F76008",  # orange
+    "#00AAAA",  # cyan
+    "#FF00FF",  # magenta
+    "#00AA00",  # vert
+    "#000000",  # noir
+    "#FF0000",  # rouge
+]
+
+# Créer une colormap discrète
+cmap_vives = ListedColormap(couleurs_vives)
 
 
 def preprocessing(
@@ -56,7 +73,7 @@ def dbscan_training(X, eps, min_samples):
 
 
 def display_silhouettes(
-    X, k, cluster_labels, eps=None, min_samples=None, inertia=None, bw=None
+    X, k, cluster_labels, eps=None, min_samples=None, inertia=None, bw=None, gamma=None
 ):
     """display silhouette charts for each of the k clusters"""
     fig, ax = plt.subplots(1, 1)
@@ -73,6 +90,11 @@ def display_silhouettes(
         silhouette_avg = 0
         silhouette_sample_values = np.zeros(cluster_labels.shape)
 
+    # if k <= cmap_vives.N:
+    #     cmap = cmap_vives
+    # else:
+    #     cmap = plt.cm.get_cmap("viridis", k)
+
     y_lower = 10
     for i in range(k):
         # On trie les valeurs de silhouette pour chaque cluster
@@ -84,7 +106,10 @@ def display_silhouettes(
         sil_avg_i = np.mean(ith_cluster_silhouette_values)
         y_upper = y_lower + size_cluster_i
 
-        color = cm.nipy_spectral(float(i) / k)
+        # color = cm.nipy_spectral(float(i) / k)
+
+        color = couleurs_vives[i]
+
         ax.fill_betweenx(
             np.arange(y_lower, y_upper),
             0,
@@ -123,6 +148,8 @@ def display_silhouettes(
         legend += f"inertie = {inertia:.0f}"
     if bw:
         legend += f"bandwidth = {bw}"
+    if gamma:
+        legend += f"gamma = {gamma}"
     ax.text(
         0.80,
         ax_height * 0.99,
@@ -147,7 +174,7 @@ def display_silhouettes(
     return fig, ax
 
 
-def display_clusters(X, k, features, centers, cluster_labels):
+def display_clusters(X, k, features, centers, cluster_labels, pop):
     """display 2D views (feature1 x feature2) showing k centers and k clusters, for all features"""
     k = centers.shape[0]
     n_graph = len(features) * (len(features) - 1) // 2
@@ -156,18 +183,26 @@ def display_clusters(X, k, features, centers, cluster_labels):
     )
 
     i = 0
+    if k <= 8:
+        cmap = cmap_vives
+    else:
+        cmap = plt.cm.get_cmap("viridis", k)
+
+    cluster_colors = [couleurs_vives[i] for i in cluster_labels]
+
     for ix, feature_x in enumerate(features):
         for ixy, feature_y in enumerate(features[ix + 1 :]):
             iy = ix + 1 + ixy
-            colors = cm.nipy_spectral(cluster_labels.astype(float) / k)
+            # colors = cm.nipy_spectral(cluster_labels.astype(float) / k)
+
             ax[i // 3, i % 3].scatter(
                 X[:, ix],
                 X[:, iy],
-                marker=".",
-                s=30,
+                marker="o",
+                s=pop / 1e6,  # dots de taille proportionnelle à la population
                 lw=0,
                 alpha=0.7,
-                c=colors,
+                c=cluster_colors,
                 edgecolor="k",
             )
             if k != 0:
@@ -250,4 +285,22 @@ def display_scores_ms(bw_values, silhouette_scores, estimate_bw):
         "MeanShift Clustering Evaluation Metrics", fontsize=16, fontweight="bold"
     )
 
+    return fig
+
+
+def display_3D(X, cluster_labels, pop, iso_code):
+    fig = plt.figure(figsize=(15, 20))
+    ax = fig.add_subplot(111, projection="3d")
+    cluster_colors = [couleurs_vives[i] for i in cluster_labels]
+    ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=cluster_colors, s=pop / 1e6, alpha=0.7)
+
+    for xi, yi, zi, label in zip(X[:, 0], X[:, 1], X[:, 2], iso_code):
+        ax.text(
+            xi + 0.01, yi + 0.01, zi + 0.01, label, fontsize=8, ha="left", va="center"
+        )
+
+    ax.set_xlabel("co2_per_energy (scaled)")
+    ax.set_ylabel("energy_per_gdp (scaled)")
+    ax.set_zlabel("gdp_per_capita (scaled)")
+    ax.set_title("Spectral Clustering (RFM)")
     return fig
