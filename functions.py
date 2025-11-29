@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import json
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib.colors import ListedColormap
@@ -11,19 +12,39 @@ from sklearn.metrics import silhouette_score, silhouette_samples
 from mpl_toolkits.mplot3d import Axes3D
 
 # Définir les couleurs (bleu, rouge, vert, noir, violet, cyan, etc.)
+# couleurs_vives = [
+#     "#0000FF",  # bleu
+#     "#800080",  # violet
+#     "#F76008",  # orange
+#     "#00AAAA",  # cyan
+#     "#FF00FF",  # magenta
+#     "#00AA00",  # vert
+#     "#000000",  # noir
+#     "#FF0000",  # rouge
+# ]
+
+# "#1E88E5", "#E53935", "#43A047"
+# "#A7C7E7", "#F8BBD9", "#B2DFDB"
+# "#D87C5B", "#9C27B0", "#00BCD4"
+
+
 couleurs_vives = [
-    "#0000FF",  # bleu
-    "#800080",  # violet
-    "#F76008",  # orange
-    "#00AAAA",  # cyan
-    "#FF00FF",  # magenta
-    "#00AA00",  # vert
-    "#000000",  # noir
-    "#FF0000",  # rouge
+    "#E53935",
+    "#9C27B0",
+    "#A7C7E7",
+    "#B2DFDB",
+    "#D87C5B",
 ]
+
 
 # Créer une colormap discrète
 cmap_vives = ListedColormap(couleurs_vives)
+
+
+def cluster_color(df):
+    if "cluster" in df.columns:
+        df["cluster_color"] = [couleurs_vives[i] for i in df["cluster"]]
+    return df
 
 
 def preprocessing(
@@ -304,3 +325,42 @@ def display_3D(X, cluster_labels, pop, iso_code):
     ax.set_zlabel("gdp_per_capita (scaled)")
     ax.set_title("Spectral Clustering (RFM)")
     return fig
+
+
+def html_world_map(df, features):
+    """create world map html dans un fichier html"""
+    with open("data/world_map.json") as f:
+        wm = json.load(f)
+
+    html_map = '<!DOCTYPE html><html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" href="css/carto.css" /><style type="text/css"></style></head><body><div id="container"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 -50 2000 1000" xml:space="preserve">'
+
+    error_code = []
+    for continent_code, continent_map in wm.items():
+        html_map += f"<g class='{continent_code}'>\n"
+
+        for country_code, country_map in continent_map.items():
+
+            try:
+                html_map += (
+                    "<path "
+                    + " ".join(
+                        [
+                            f"data-{feat}='{df[df["iso_code"]==country_code[:3]][feat].iloc[0]}'"
+                            for feat in features
+                        ]
+                    )
+                    + f" class='country {country_code[:3]}' d='{country_map}' style='fill:{df[df["iso_code"]==country_code[:3]]["cluster_color"].iloc[0]}; stroke:{'#555'}; opacity:0.8;'></path>"
+                )
+            except IndexError:
+                html_map += f"<path data-country='unknown' class='country {country_code[:3]}' d='{country_map}' style='fill:{'#aaa'}; stroke:{'#555'}; opacity:0.8;'></path>"
+                error_code.append(country_code[:3])
+
+        html_map += "</g>"
+    html_map += "</svg></div></body><script src='iso_code.js'></script></html>"
+
+    list_error = [code for code in set(error_code)]
+    list_error.sort()
+    print("Error codes: ", len(list_error))
+    print(", ".join(list_error))
+    with open("results/world_map.html", "w") as f:
+        f.write(html_map)
