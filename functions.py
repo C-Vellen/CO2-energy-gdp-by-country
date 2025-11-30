@@ -36,6 +36,8 @@ couleurs_vives = [
     "#D87C5B",
 ]
 
+color_map = dict(zip(range(5), couleurs_vives))
+
 
 # Créer une colormap discrète
 cmap_vives = ListedColormap(couleurs_vives)
@@ -252,6 +254,14 @@ def display_clusters(X, k, features, centers, cluster_labels, pop):
                 fontsize=14,
                 fontweight="bold",
             )
+            plt.text(
+                x=0.5,
+                y=0.90,
+                s="Surface des points proportionnelle à la population",
+                fontsize=12,
+                ha="center",
+                transform=fig.transFigure,
+            )
             i += 1
     return fig
 
@@ -356,7 +366,14 @@ def html_world_map(df, features):
                 error_code.append(country_code[:3])
 
         html_map += "</g>"
-    html_map += "</svg></div></body><script src='iso_code.js'></script></html>"
+
+        # legend
+    html_map += "<g style='transform:translate(150px, 700px);'>"
+    # for i, k in range(len(set(df["cluster_color"]))):
+    for i, k in enumerate(couleurs_vives):
+        html_map += f"<g style='transform:translate(0,{i*30}px);'> <rect x='0' y='0' width='60' height='20' fill='{k}' stroke='#000'></rect><text x='120' y='20' style='font-size:20px;'>cluster: {i}</text> </g>"
+
+    html_map += "</g></svg></div></body><script src='iso_code.js'></script></html>"
 
     list_error = [code for code in set(error_code)]
     list_error.sort()
