@@ -4,6 +4,17 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
 
+units = {
+    "co2": "Mt/year",
+    "energy": "kWh/year",
+    "gdp": "$/year",
+    "population": "",
+    "co2_per_unit_energy": "kg/kWh",
+    "energy_per_gdp": "kWh/$(2011)",
+    "gdp_per_capita": "$(2011)/capita/year",
+}
+
+
 couleurs_vives = [
     "#E53935",
     "#9C27B0",
