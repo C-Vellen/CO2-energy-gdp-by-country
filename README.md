@@ -10,9 +10,13 @@ L'objectif est de proposer une classification des pays en les regroupant en fonc
 - population
 
 Plutôt que de ne considérer que les émissions de $CO_{2}$, qui ne rendent pas compte des particularités de chaque pays, il s'agit de les décomposer en variables en s'inspirant de l'identité de Kaya : 
+<br><br>
+
 $$
-CO_{2}[kg] = \frac{CO_{2}[kg]}{energy[kWh]} * \frac{energy[kWh]}{gdp[\$]} * \frac{gdp[\$]}{population} * population
+    CO_{2}[kg] = \frac{CO_{2}[kg]}{energy[kWh]} * \frac{energy[kWh]}{gdp[\$]} * \frac{gdp[\$]}{population} * population
 $$
+
+## Demo : [carte du monde](https://github.com/C-Vellen/CO2-energy-gdp-by-country)
 
 ##  Exemple de clustering : 
 <img src="outputs/world_map.png" width="50%" alt="aperçu du clustering">
