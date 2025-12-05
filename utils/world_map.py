@@ -42,11 +42,13 @@ def html_world_map(df, features):
     for i in range(len(set(df["cluster"]))):
         html_map += f"<g style='transform:translate(0,{i*30}px);'> <rect x='0' y='0' width='60' height='20' fill='{couleurs_vives[i]}' stroke='#000'></rect><text x='120' y='20' style='font-size:20px;'>cluster: {i}</text> </g>"
     html_map += f"<g style='transform:translate(0,{len(set(df["cluster"]))*30}px);'> <rect x='0' y='0' width='60' height='20' fill='#aaa' stroke='#000'></rect><text x='120' y='20' style='font-size:18px;'>Manque de données</text> </g>"
-    html_map += "</g></svg></div></body><script src='tooltip.js'></script></html>"
+    html_map += (
+        "</g></svg></div></body><script src='outputs/tooltip.js'></script></html>"
+    )
 
     list_error = [code for code in set(error_code)]
     list_error.sort()
     print("Error codes: ", len(list_error), "manque de données")
     print(", ".join(list_error))
-    with open("../outputs/world_map.html", "w") as f:
+    with open("../index.html", "w") as f:
         f.write(html_map)
