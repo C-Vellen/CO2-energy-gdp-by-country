@@ -16,7 +16,7 @@ $$
     CO_{2}[kg] = \frac{CO_{2}[kg]}{energy[kWh]} * \frac{energy[kWh]}{gdp[\$]} * \frac{gdp[\$]}{population} * population
 $$
 
-## Demo : [carte du monde](https://github.com/C-Vellen/CO2-energy-gdp-by-country)
+## Demo : [carte du monde](https://c-vellen.github.io/CO2-energy-gdp-by-country/)
 
 ##  Exemple de clustering : 
 <img src="outputs/world_map.png" width="50%" alt="aperçu du clustering">
