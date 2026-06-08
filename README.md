@@ -13,8 +13,9 @@ L'objectif est de proposer une classification des pays en les regroupant en fonc
 
 Plutôt que de ne considérer que les émissions de $CO\_{2}$, qui ne rendent pas compte des particularités de chaque pays, il s'agit de les décomposer en variables en s'inspirant de l'identité de Kaya :
 
+
 $$
-CO\_{2}[kg] = \\frac{CO\_{2}[kg]}{energy[kWh]} * \\frac{energy[kWh]}{gdp[$]} * \\frac{gdp[$]}{population} * population
+\text{CO}_{2}[\text{kg}] = \frac{\text{CO}_{2}[\text{kg}]}{\text{energy}[\text{kWh}]} * \frac{\text{energy}[\text{kWh}]}{\text{gdp}[\$]} * \frac{\text{gdp}[\$]}{\text{population}} * \text{population}
 $$
 
 ## Demo : [carte du monde](https://c-vellen.github.io/CO2-energy-gdp-by-country/)
@@ -43,13 +44,13 @@ Données utilisées pour la modélisation:
 ```
 
 - nettoyage des colonnes superflues, construction des colonnes : 
-  - $CO\_{2}[Mt]$ : Annual total CO2 emission from burning fossil fuels and industrial processes. Includes : transport, energy production, heating. Excludes : land-use change (impact of deforestation).
+  - $CO_{2}[Mt]$ : Annual total CO2 emission from burning fossil fuels and industrial processes. Includes : transport, energy production, heating. Excludes : land-use change (impact of deforestation).
   - $energy [kWh]$ : primary energy consumption per year
-  - $gdp [$]$ : gross domestic product per year, in 2011$ prices
+  - $gdp [\$]$ : gross domestic product per year, in 2011$ prices
   - $population$ : population by country
-  - $ \\frac{CO\_{2}[kg]}{energy[kWh]} $ : "co2_per_unit_energy" = how many CO2 kg is emitted when 1kWh energy is consumed (high with coal, oil, low with solar, wind, nuclear)
-  - $ \\frac{energy[kWh]}{gdp[$]} $ : "energy_per_gdp" = how many energy ($) is necessary to produce wealth ($) (high : unefficient, poor isolation, low: efficient, good yield)
-  - $ \\frac{gdp[$]}{population} $ : add column "gdp_per_capita" by dividing "gdp" per "population"
+  - $\frac{CO_{2}[kg]}{energy[kWh]}$ : "co2_per_unit_energy" = how many CO2 kg is emitted when 1kWh energy is consumed (high with coal, oil, low with solar, wind, nuclear)
+  - $ \frac{energy[kWh]}{gdp[\$]} $ : "energy_per_gdp" = how many energy ($) is necessary to produce wealth ($) (high : unefficient, poor isolation, low: efficient, good yield)
+  - $ \frac{gdp[\$]}{population} $ : add column "gdp_per_capita" by dividing "gdp" per "population"
 - enregistrement du nouveau dataset :
 
 ```bash
