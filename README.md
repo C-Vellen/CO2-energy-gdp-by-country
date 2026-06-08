@@ -45,12 +45,12 @@ Données utilisées pour la modélisation:
 
 - nettoyage des colonnes superflues, construction des colonnes : 
   - $CO_{2}[Mt]$ : Annual total CO2 emission from burning fossil fuels and industrial processes. Includes : transport, energy production, heating. Excludes : land-use change (impact of deforestation).
-  - $energy [kWh]$ : primary energy consumption per year
-  - $gdp [\$]$ : gross domestic product per year, in 2011$ prices
+  - $energy[kWh]$ : primary energy consumption per year
+  - $gdp[\$]$ : gross domestic product per year, in 2011$ prices
   - $population$ : population by country
   - $\frac{CO_{2}[kg]}{energy[kWh]}$ : "co2_per_unit_energy" = how many CO2 kg is emitted when 1kWh energy is consumed (high with coal, oil, low with solar, wind, nuclear)
-  - $ \frac{energy[kWh]}{gdp[\$]} $ : "energy_per_gdp" = how many energy ($) is necessary to produce wealth ($) (high : unefficient, poor isolation, low: efficient, good yield)
-  - $ \frac{gdp[\$]}{population} $ : add column "gdp_per_capita" by dividing "gdp" per "population"
+  - $\frac{energy[kWh]}{gdp[\$]}$ : "energy_per_gdp" = how many energy ($) is necessary to produce wealth ($) (high : unefficient, poor isolation, low: efficient, good yield)
+  - $\frac{gdp[\$]}{population}$ : add column "gdp_per_capita" by dividing "gdp" per "population"
 - enregistrement du nouveau dataset :
 
 ```bash
